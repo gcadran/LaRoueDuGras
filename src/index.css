@@ -1,0 +1,338 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  padding: 32px 24px 48px;
+}
+
+/* App layout and Roulette styles */
+.roulette-app {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.wheel-column {
+  text-align: center;
+  width: 100%;
+  max-width: 520px;
+}
+
+.wheel-canvas {
+  width: 420px;
+  height: 420px;
+  background: #f5f5f5;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  display: block;
+  margin: 0 auto;
+}
+
+/* Header and account button */
+.header {
+  width: 100%;
+  max-width: 1100px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* container for account actions (icon + admin toggle) */
+.account-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.accounts-toggle {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.accounts-toggle:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+/* when not admin, show disabled appearance but keep layout */
+.accounts-toggle-disabled {
+  opacity: 0.36;
+  pointer-events: none;
+}
+
+.account-button {
+  margin-left: 4px;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-button:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+/* account list component styles */
+.account-list {
+  position: absolute;
+  right: 0;
+  top: 36px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  padding: 8px;
+  border-radius: 8px;
+  min-width: 200px;
+  z-index: 1000;
+}
+.account-list-item {
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #111827;
+}
+.account-list-item + .account-list-item {
+  margin-top: 6px;
+}
+.account-list-item:hover { background: rgba(0,0,0,0.04); }
+
+/* place account actions (toggle + account button) to the right of the header */
+.header .account-actions {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.account-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.account-button:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+/* Inline variant for account list inside modal */
+.account-list-inline {
+  position: relative;
+  right: auto;
+  top: auto;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 6px 0 0 0;
+  min-width: auto;
+}
+.account-list-inline .account-list-item { padding: 6px 0; color: #111827 }
+
+.account-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-block;
+}
+
+.account-modal {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  padding: 14px;
+  z-index: 60;
+}
+.account-modal h3 { margin: 0 0 8px; }
+.account-modal input { width: 100%; padding: 8px 10px; margin-bottom: 8px; border-radius:6px; border:1px solid #ddd }
+.account-modal .btn { width: 100%; padding: 8px 10px; border-radius:8px; border: none; cursor: pointer }
+.account-modal .btn.primary { background:#4f46e5; color:white }
+.account-modal .small { font-size: 0.9em; color:#666; margin-top:8px }
+
+/* Dropdown for admin accounts list */
+.account-dropdown {
+  position: absolute;
+  right: 0;
+  top: 34px;
+  min-width: 220px;
+  max-width: 320px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 8px;
+  z-index: 80;
+  border: 1px solid #eee;
+}
+.account-dropdown-item {
+  padding: 8px 6px;
+  border-radius: 6px;
+  font-size: 0.95em;
+}
+.account-dropdown-item + .account-dropdown-item {
+  margin-top: 6px;
+}
+
+/* accounts toggle button (visible icon) */
+.accounts-toggle {
+  background: rgba(0,0,0,0.04);
+  border: 1px solid transparent;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.accounts-toggle:hover {
+  background: rgba(0,0,0,0.06);
+}
+
+/* Make account-button visible in header */
+.account-button {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.account-button:hover { background: rgba(0,0,0,0.04); }
+
+.account-badge {
+  font-size: 0.85rem;
+  color: #d1d5db;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+.account-badge[title] { cursor: default }
+
+.spin-button {
+  margin-top: 30px;
+  padding: 12px 32px;
+  font-size: 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #fff;
+  border: 2px solid #444;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+.spin-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.debug-text {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.history-card {
+  width: 320px;
+  padding: 25px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  border: 1px solid #e5e5e5;
+}
+
+@media (max-width: 880px) {
+  .roulette-app {
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+  .history-card {
+    width: 100%;
+    max-width: 520px;
+  }
+  .wheel-canvas {
+    width: 360px;
+    height: 360px;
+  }
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  text-align: center;
+  width: 100%;
+  margin: 8px 0 20px;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
