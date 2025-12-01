@@ -1,73 +1,114 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+    # La Roue Du Gras
 
-Currently, two official plugins are available:
+    Une application front (React + TypeScript + Vite) pour choisir un restaurant au hasard grâce à une roulette animée.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+    ## Aperçu
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+    La Roue Du Gras propose une interface simple pour gérer un pool de restaurants et lancer une roulette visuelle qui sélectionne aléatoirement un établissement.
 
-## Expanding the ESLint configuration
+    Ajoutez une capture ou un GIF demo dans `public/demo.gif` pour illustrer ici :
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+    ![Demo](public/demo.gif)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+    ---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+    ## Principales fonctionnalités
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    - Lancer une roulette animée pour choisir un restaurant
+    - Gérer un pool de restaurants (ajout / suppression / édition)
+    - Interface responsive et légère
+    - Possibilité d'ajouter persistance via `localStorage` ou un backend
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+    ---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+    ## Stack technique
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    - React + TypeScript
+    - Vite (dev server & build)
+    - ESLint (qualité de code)
+
+    ---
+
+    ## Prérequis
+
+    - Node.js (LTS recommandé, ex. 18+)
+    - npm ou yarn
+
+    ---
+
+    ## Installation rapide
+
+    ```bash
+    # Cloner le dépôt
+    git clone https://github.com/gcadran/LaRoueDuGras.git
+    cd LaRoueDuGras
+
+    # Installer les dépendances
+    npm install
+    # ou
+    # yarn install
+    ```
+
+    ### Lancer en développement
+
+    ```powershell
+    npm run dev
+    # ou
+    # yarn dev
+    ```
+
+    ### Build production
+
+    ```powershell
+    npm run build
+    npm run preview
+    ```
+
+    Les fichiers optimisés seront dans `dist/`.
+
+    ---
+
+    ## Structure du projet (extrait)
+
+    - `public/` — fichiers statiques (images, demo GIF)
+    - `src/` — code source
+      - `main.tsx` — point d'entrée
+      - `index.css` — styles globaux
+      - `assets/` — images et données statiques
+      - `Components/` — composants React
+        - `Roulette.tsx` — animation & sélection aléatoire
+        - `RestaurantPool.tsx` — gestion du pool de restaurants
+        - `AccountManager.ts` / `AccountList.tsx` / `AccountButton.tsx` — gestion des comptes
+
+    ---
+
+    ## Personnaliser la liste de restaurants
+
+    La liste initiale se trouve dans `src/Components/RestaurantPool.tsx` ou dans un fichier de données associé. Options :
+
+    - Modifier la liste initiale directement dans le code
+    - Ajouter un formulaire d'import (CSV/JSON)
+    - Implémenter la persistance via `localStorage` ou une API REST
+
+    Exemple simple pour persister via `localStorage` :
+
+    ```ts
+    useEffect(() => {
+      const saved = localStorage.getItem('restaurants');
+      if (saved) setRestaurants(JSON.parse(saved));
+    }, []);
+
+    useEffect(() => {
+      localStorage.setItem('restaurants', JSON.stringify(restaurants));
+    }, [restaurants]);
+    ```
+
+  
+
+    
+
+    
+
+
