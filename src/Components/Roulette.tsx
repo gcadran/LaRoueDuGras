@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import RestaurantPool from "./RestaurantPool";
+import AccountManager from "./AccountManager";
 
 type Segment = {
   name: string;
@@ -220,6 +221,23 @@ export default function Roulette() {
 
   function spin() {
     if (isSpinning) return;
+    // restriction: if anyone (guest or user) has spun today, block non-admins
+    try {
+      const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const lastGlobal = localStorage.getItem("roulette_last_spin_date");
+      const am = new AccountManager();
+      const cur = am.getCurrentUser();
+      // if current is admin => allow always
+      const isAdmin = cur && (cur as any).role === "admin";
+      if (!isAdmin) {
+        if (lastGlobal === todayStr) {
+          window.alert("La roue a déjà été tournée aujourd'hui. Seul l'admin peut la relancer.");
+          return;
+        }
+      }
+    } catch (e) {
+      // ignore errors and allow spin as fallback
+    }
     setIsSpinning(true);
     setDebug("");
 
@@ -256,6 +274,14 @@ export default function Roulette() {
         `${selected} (${new Date().toLocaleString()})`,
         ...h,
       ]);
+
+      // after a successful spin, mark globally that the wheel was spun today
+      try {
+        const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        localStorage.setItem("roulette_last_spin_date", todayStr);
+      } catch (e) {
+        // ignore storage errors
+      }
 
       setIsSpinning(false);
       setDebug(`🎉 ${selected} a été choisi !`);

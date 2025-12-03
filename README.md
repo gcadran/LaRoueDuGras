@@ -3,6 +3,12 @@
 
     Une application front (React + TypeScript + Vite) pour choisir un restaurant au hasard grâce à une roulette animée.
 
+## modification ajouté par moi
+- j ai rajouter une supression de compte par l'admin avec validation par une popup
+- l'admin puisse faire tourné plusieurs fois la roue mais la roue peut etre lance une seule fois par jour pour tout les utilisateur (soit un utilisateur la lance pour tout le monde)
+
+
+
 
     ## Aperçu
 

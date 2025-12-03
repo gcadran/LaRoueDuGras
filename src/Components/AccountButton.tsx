@@ -113,7 +113,27 @@ export default function AccountButton() {
               {(current as any).role === 'admin' && (
                 <div style={{ marginTop: 12 }}>
                   <strong>Comptes existants:</strong>
-                  <AccountList accounts={accounts} visible={true} className="account-list-inline" />
+                  <AccountList
+                    accounts={accounts}
+                    visible={true}
+                    className="account-list-inline"
+                    onDelete={(username) => {
+                      // confirmation popup
+                      const ok = window.confirm(`Supprimer le compte "${username}" ? Cette action est irréversible.`);
+                      if (!ok) return;
+                      try {
+                        am.deleteAccount(username);
+                        setAccounts(am.listAccounts());
+                        setMessage(`Compte "${username}" supprimé.`);
+                        // update current user in case their session was removed
+                        const cur = am.getCurrentUser();
+                        setCurrent(cur);
+                      } catch (err: any) {
+                        window.alert(err?.message || String(err));
+                        setMessage(err?.message || String(err));
+                      }
+                    }}
+                  />
                 </div>
               )}
               <div style={{ marginTop: 12 }}>
