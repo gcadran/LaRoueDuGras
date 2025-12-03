@@ -12,6 +12,32 @@ export class RestaurantPool {
     "Holly's": 0.1,
   };
 
+  private STORAGE_KEY = "roulette_base_probs";
+
+  constructor() {
+    try {
+      const raw = localStorage.getItem(this.STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Probs;
+        // validate parsed is an object of numbers
+        const ok = Object.values(parsed).every((v) => typeof v === "number");
+        if (ok) this.base = { ...parsed };
+      }
+    } catch (e) {
+      // ignore and keep default
+    }
+  }
+
+  /** Remplace les probabilités de base et les persiste en localStorage */
+  setBaseProbs(next: Probs) {
+    this.base = { ...next };
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.base));
+    } catch (e) {
+      // ignore storage errors
+    }
+  }
+
   getBaseProbs(): Probs {
     return { ...this.base };
   }

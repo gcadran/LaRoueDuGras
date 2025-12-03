@@ -6,6 +6,7 @@
 ## modification ajouté par moi
 - j ai rajouter une supression de compte par l'admin avec validation par une popup
 - l'admin puisse faire tourné plusieurs fois la roue mais la roue peut etre lance une seule fois par jour pour tout les utilisateur (soit un utilisateur la lance pour tout le monde)
+- ajout de modification par l'admin des chois sur la roullete et les proba 
 
 
 

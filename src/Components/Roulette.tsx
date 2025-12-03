@@ -33,6 +33,13 @@ export default function Roulette() {
   const pool = new RestaurantPool();
   const [boosted, setBoosted] = useState<string | null>(null);
   const skipNextHistorySegUpdate = useRef(false);
+  const [adminOpen, setAdminOpen] = useState<boolean>(false);
+  const [adminProbs, setAdminProbs] = useState<Record<string, number>>(() => pool.getBaseProbs());
+
+  // refresh adminProbs when pool changes (e.g., on mount)
+  useEffect(() => {
+    setAdminProbs(pool.getBaseProbs());
+  }, []);
 
   // ---------------------------
   // MESSAGE BONUS
@@ -340,9 +347,91 @@ export default function Roulette() {
           className="wheel-canvas"
         />
 
-        <button onClick={spin} disabled={isSpinning} className="spin-button">
-          🎡 SPIN
-        </button>
+        <div className="wheel-controls" style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 12 }}>
+          <button onClick={spin} disabled={isSpinning} className="spin-button">
+            🎡 SPIN
+          </button>
+
+          {/* Admin toggle: visible only if current user is admin */}
+          {(() => {
+            try {
+              const am = new AccountManager();
+              const cur = am.getCurrentUser();
+              if (cur && (cur as any).role === 'admin') {
+                return (
+                  <button className="btn admin-btn" onClick={() => { setAdminOpen((s) => !s); setAdminProbs(pool.getBaseProbs()); }}>
+                    ⚙️ Admin
+                  </button>
+                );
+              }
+            } catch (e) {
+              return null;
+            }
+            return null;
+          })()}
+        </div>
+
+        {adminOpen && (
+          <div className="admin-panel" style={{ marginTop: 12, padding: 12, border: '1px solid #ddd', borderRadius: 6, background: '#fafafa' }}>
+            <h4>Administration de la roue</h4>
+            <div style={{ display: 'grid', gap: 8 }}>
+              {Object.entries(adminProbs).map(([name, p]) => (
+                <div key={name} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <input value={name} readOnly style={{ width: 160 }} />
+                  <input type="number" step="0.01" min="0" value={Number((p * 100).toFixed(2))} onChange={(e) => {
+                    const v = Math.max(0, Number(e.target.value));
+                    setAdminProbs((s) => ({ ...s, [name]: v / 100 }));
+                  }} style={{ width: 100 }} />
+                  <button className="btn small danger" onClick={() => {
+                    const copy = { ...adminProbs };
+                    delete copy[name];
+                    setAdminProbs(copy);
+                  }}>Supprimer</button>
+                </div>
+              ))}
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                <input id="new-name" placeholder="Nouveau nom" style={{ width: 160 }} />
+                <input id="new-prob" placeholder="Prob % (ex: 10)" style={{ width: 100 }} />
+                <button className="btn" onClick={() => {
+                  const nameEl = document.getElementById('new-name') as HTMLInputElement | null;
+                  const probEl = document.getElementById('new-prob') as HTMLInputElement | null;
+                  if (!nameEl || !probEl) return;
+                  const name = nameEl.value.trim();
+                  const prob = Number(probEl.value);
+                  if (!name || isNaN(prob) || prob <= 0) {
+                    window.alert('Nom invalide ou probabilité invalide');
+                    return;
+                  }
+                  if (adminProbs[name]) {
+                    window.alert('Ce nom existe déjà');
+                    return;
+                  }
+                  setAdminProbs((s) => ({ ...s, [name]: prob / 100 }));
+                  nameEl.value = '';
+                  probEl.value = '';
+                }}>Ajouter</button>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                <button className="btn primary" onClick={() => {
+                  // save
+                  try {
+                    pool.setBaseProbs(adminProbs);
+                    // refresh segments to reflect new base
+                    const { probs, boosted: b } = pool.getProbs(today, history);
+                    setSegmentsFromProbs(probs);
+                    setBoosted(b);
+                    window.alert('Probabilités enregistrées');
+                  } catch (e) {
+                    window.alert('Erreur lors de la sauvegarde');
+                  }
+                }}>Enregistrer</button>
+                <button className="btn" onClick={() => { setAdminOpen(false); }}>Fermer</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {!isSpinning && debug && <div className="debug-text">{debug}</div>}
       </div>
