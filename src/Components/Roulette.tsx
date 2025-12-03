@@ -26,6 +26,8 @@ export default function Roulette() {
 
   // MODE NORMAL
   const today: number = new Date().getDay();
+  //MODE TEST DATE 
+  //const today: number = 2; // for testing Tuesday
 
   // Pool des restaurants (gère probs, boost, historique)
   const pool = new RestaurantPool();
