@@ -319,6 +319,8 @@ export default function Roulette() {
     drawWheel(rotationRef.current || 0);
   }, [segments]);
 
+  // (history clearing UI removed)
+
   // ---------------------------
   // UI
   // ---------------------------
@@ -349,7 +351,8 @@ export default function Roulette() {
 
         <div className="wheel-controls" style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 12 }}>
           <button onClick={spin} disabled={isSpinning} className="spin-button">
-            🎡 SPIN
+            <span className="icon" aria-hidden>🎡</span>
+            <span className="btn-text">SPIN</span>
           </button>
 
           {/* Admin toggle: visible only if current user is admin */}
@@ -360,7 +363,8 @@ export default function Roulette() {
               if (cur && (cur as any).role === 'admin') {
                 return (
                   <button className="btn admin-btn" onClick={() => { setAdminOpen((s) => !s); setAdminProbs(pool.getBaseProbs()); }}>
-                    ⚙️ Admin
+                      <span className="icon" aria-hidden>⚙️</span>
+                      <span className="btn-text">Admin</span>
                   </button>
                 );
               }
@@ -447,6 +451,7 @@ export default function Roulette() {
             paddingRight: "8px",
           }}
         >
+          {history.length === 0 && <div style={{ color: '#666' }}>Aucun élément dans l'historique.</div>}
           {history.map((h, i) => (
             <div key={i} style={{ marginBottom: 8 }}>
               {h}
